@@ -111,7 +111,7 @@ export class App implements OnInit {
                 this.processandoAcesso = false;
                 this.mensagemErro = erro.status === 409 ? 'Este e-mail já está cadastrado.'
                     : erro.status === 401 ? 'E-mail ou senha incorretos.'
-                    : 'Não foi possível concluir o acesso. Confira os dados e o backend.';
+                    : 'Não foi possível concluir o acesso.';
                 this.cdr.markForCheck();
             }
         });
@@ -170,7 +170,7 @@ export class App implements OnInit {
                 this.cdr.markForCheck();
             },
             error: () => {
-                this.mensagemErro = 'Não foi possível excluir o aluno. Confira se o backend permite remover seu histórico.';
+                this.mensagemErro = 'Não foi possível excluir o aluno.';
                 this.cdr.markForCheck();
             }
         });
