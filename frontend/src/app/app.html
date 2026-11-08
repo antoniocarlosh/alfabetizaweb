@@ -1,0 +1,156 @@
+<div class="page">
+    <header class="header">
+        <div class="brand"><span class="brand-icon">✦</span> Alfabetiza<span>Web</span></div>
+        <div class="header-actions" *ngIf="conta">
+            <span>Olá, {{ conta.nome }}!</span>
+            <button class="header-button" (click)="voltarInicio()">⌂ Início</button>
+            <button class="header-button" (click)="sair()">Sair</button>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="hero">
+            <span class="eyebrow">APRENDER É UMA AVENTURA</span>
+            <h1>Aprender brincando <span>é mais divertido!</span></h1>
+            <p>Descubra as letras, forme palavras e conquiste novos conhecimentos.</p>
+        </div>
+
+        <div class="error" role="alert" *ngIf="mensagemErro">{{ mensagemErro }}</div>
+
+        <section class="panel access-panel" *ngIf="!verificandoSessao && !conta">
+            <h2>{{ modoAcesso === 'entrar' ? 'Entrar na minha família' : 'Criar conta de responsável' }}</h2>
+            <p>O responsável organiza os perfis e acompanha o aprendizado das crianças.</p>
+            <form (ngSubmit)="autenticar()" class="access-fields">
+                <input *ngIf="modoAcesso === 'registrar'" name="nome" aria-label="Nome do responsável" placeholder="Seu nome" [(ngModel)]="nomeAcesso" required autocomplete="name" />
+                <input name="email" type="email" aria-label="E-mail" placeholder="E-mail" [(ngModel)]="emailAcesso" required autocomplete="email" />
+                <input name="senha" type="password" aria-label="Senha" placeholder="Senha (mínimo 8 caracteres)" [(ngModel)]="senhaAcesso" required minlength="8" [attr.autocomplete]="modoAcesso === 'entrar' ? 'current-password' : 'new-password'" />
+                <button type="submit" class="primary-access" [disabled]="processandoAcesso">{{ processandoAcesso ? 'Aguarde...' : modoAcesso === 'entrar' ? 'Entrar' : 'Criar conta' }}</button>
+            </form>
+            <button class="link-button" (click)="modoAcesso = modoAcesso === 'entrar' ? 'registrar' : 'entrar'; mensagemErro = ''">
+                {{ modoAcesso === 'entrar' ? 'Ainda não tenho conta' : 'Já tenho conta' }}
+            </button>
+        </section>
+        <p *ngIf="verificandoSessao" class="loading">Verificando sessão...</p>
+
+        <ng-container *ngIf="conta && tela === 'inicio'">
+            <section class="panel selection">
+                <div>
+                    <h2>👋 Quem vai brincar hoje?</h2>
+                    <p>Selecione o aluno para salvar seus pontos.</p>
+                </div>
+                <select aria-label="Selecionar aluno" [ngModel]="alunoSelecionadoId" (ngModelChange)="selecionarAluno($event)">
+                    <option [ngValue]="null">Selecione um aluno</option>
+                    <option *ngFor="let aluno of alunos" [ngValue]="aluno.id">{{ aluno.nome }} ({{ aluno.idade }} anos)</option>
+                </select>
+            </section>
+
+            <div class="section-heading"><h2>Escolha sua aventura</h2><span>3 mundos para explorar</span></div>
+            <section class="modules">
+                <article class="module letters">
+                    <div class="module-art">Aa</div>
+                    <div class="module-content"><span class="tag">MUNDO 01</span><h3>Conhecendo as letras</h3><p>Explore o alfabeto de A a Z!</p>
+                        <button (click)="iniciarModulo('LETRAS')" [disabled]="carregando">Jogar agora →</button></div>
+                </article>
+                <article class="module syllables">
+                    <div class="module-art">BA<br/>BE</div>
+                    <div class="module-content"><span class="tag">MUNDO 02</span><h3>Formando sílabas</h3><p>Junte sons e descubra novas palavras.</p>
+                        <button (click)="iniciarModulo('SILABAS')" [disabled]="carregando">Jogar agora →</button></div>
+                </article>
+                <article class="module pictures">
+                    <div class="module-art">🍎</div>
+                    <div class="module-content"><span class="tag">MUNDO 03</span><h3>Imagem e palavra</h3><p>Observe a figura e escolha a palavra.</p>
+                        <button (click)="iniciarModulo('IMAGEM_PALAVRA')" [disabled]="carregando">Jogar agora →</button></div>
+                </article>
+            </section>
+
+            <section class="bottom-grid">
+                <div class="panel">
+                    <h2>🌟 Meu progresso</h2>
+                    <p>Veja quantas atividades você já completou.</p>
+                    <button class="secondary-button" (click)="abrirProgresso()">Ver meu progresso →</button>
+                </div>
+                <div class="panel register">
+                    <h2>➕ Novo aluno</h2>
+                    <div class="fields">
+                        <input aria-label="Nome do aluno" placeholder="Nome do aluno" [(ngModel)]="nomeAluno" />
+                        <input aria-label="Idade do aluno" type="number" min="3" max="18" [(ngModel)]="idadeAluno" />
+                        <button class="secondary-button" (click)="cadastrarAluno()">Cadastrar aluno</button>
+                    </div>
+                    <div class="family-list" *ngIf="alunos.length">
+                        <h3>Perfis da família</h3>
+                        <div class="family-member" *ngFor="let aluno of alunos">
+                            <span>{{ aluno.nome }} ({{ aluno.idade }} anos)</span>
+                            <button type="button" class="delete-button" (click)="excluirAluno(aluno)" [attr.aria-label]="'Excluir ' + aluno.nome">Excluir</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </ng-container>
+
+        <ng-container *ngIf="conta && tela === 'jogo'">
+            <section class="game panel" *ngIf="!finalizado && atividadeAtual as atividade">
+                <div class="game-top"><span class="tag">{{ modulo === 'LETRAS' ? 'LETRAS' : modulo === 'SILABAS' ? 'SÍLABAS' : 'IMAGEM E PALAVRA' }}</span><span>Questão {{ indiceAtividade + 1 }} de {{ atividades.length }}</span></div>
+                <div class="progress-track"><div class="progress-fill" [style.width.%]="(indiceAtividade / atividades.length) * 100"></div></div>
+                <h2>{{ atividade.enunciado }}</h2>
+                <button
+                    type="button"
+                    class="audio-button"
+                    (click)="ouvirEnunciado()"
+                    aria-label="Ouvir enunciado"
+                >
+                    🔊 Ouvir pergunta
+                </button>
+                <div class="picture" *ngIf="atividade.imagemUrl"><img [src]="atividade.imagemUrl" [alt]="'Imagem da atividade ' + atividade.titulo" /></div>
+                <div class="answers">
+                    <button *ngFor="let opcao of atividade.opcoes" (click)="escolherResposta(opcao)" [disabled]="!!resultado || enviando" [class.chosen]="respostaSelecionada === opcao">{{ opcao }}</button>
+                </div>
+                <div class="feedback" *ngIf="resultado" [class.correct]="resultado === 'acerto'" [class.incorrect]="resultado === 'erro'" role="status">
+                    <strong>{{ resultado === 'acerto' ? '🎉 Muito bem! Você acertou!' : '💪 Boa tentativa! Continue aprendendo!' }}</strong>
+                    <button (click)="proximaAtividade()">Próxima atividade →</button>
+                </div>
+            </section>
+            <section class="panel finished" *ngIf="finalizado"><div class="celebration">🏆</div><h2>Parabéns, {{ alunoAtual?.nome }}!</h2><p>Você terminou esta aventura!</p>
+                <button class="secondary-button" (click)="abrirProgresso()">Ver meus pontos</button>
+                <button class="link-button" (click)="voltarInicio()">Voltar ao início</button>
+            </section>
+            <section class="panel" *ngIf="!carregando && atividades.length === 0"><p>Nenhuma atividade encontrada para este módulo.</p><button (click)="voltarInicio()">Voltar</button></section>
+        </ng-container>
+
+        <section class="panel stats" *ngIf="conta && tela === 'progresso'">
+            <span class="eyebrow">MINHAS CONQUISTAS</span>
+            <h2>Recordes de {{ alunoAtual?.nome }}</h2>
+            <p>O melhor resultado de cada jogo. Apenas rodadas concluídas entram no recorde.</p>
+            <div class="record-grid">
+                <article class="record-card" *ngFor="let painel of paineis">
+                    <h3>{{ nomeModalidade(painel.modalidade) }}</h3>
+                    <strong *ngIf="painel.recorde; else semRecorde">
+                        {{ painel.recorde.acertos }}/{{ painel.recorde.total }}
+                    </strong>
+                    <ng-template #semRecorde><strong>—</strong></ng-template>
+                    <p *ngIf="painel.recorde">{{ painel.recorde.pontos }} pontos · {{ painel.historico.length }} rodada(s)</p>
+                    <p *ngIf="!painel.recorde">Nenhuma rodada concluída</p>
+                </article>
+            </div>
+            <h3>Histórico de rodadas</h3>
+            <div class="history-filters">
+                <button type="button" *ngFor="let painel of paineis"
+                    [class.active]="filtroHistorico === painel.modalidade"
+                    (click)="filtroHistorico = painel.modalidade">
+                    {{ nomeModalidade(painel.modalidade) }}
+                </button>
+            </div>
+            <div class="history" *ngIf="painelSelecionado?.historico?.length; else semHistorico">
+                <div *ngFor="let rodada of painelSelecionado?.historico">
+                    <span>{{ rodada.concluidaEm | date:'dd/MM/yyyy HH:mm' }} —
+                        {{ rodada.acertos }} acertos / {{ rodada.erros }} erros</span>
+                    <strong>{{ rodada.pontos }} pontos</strong>
+                </div>
+            </div>
+            <ng-template #semHistorico><p>Nenhuma rodada concluída nesta modalidade.</p></ng-template>
+            <button class="secondary-button" (click)="voltarInicio()">Voltar às aventuras</button>
+        </section>
+    </main>
+    <footer>Feito com 💛 para aprender brincando · AlfabetizaWeb</footer>
+</div>
+
+<router-outlet></router-outlet>

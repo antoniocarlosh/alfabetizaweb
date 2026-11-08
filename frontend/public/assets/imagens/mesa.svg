@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Mesa de quatro pernas">
+    <rect x="8" y="8" width="224" height="224" rx="36" fill="#f2efff"/>
+    <rect x="32" y="93" width="176" height="23" rx="8" fill="#bf8249"/>
+    <path d="M46 116 L63 116 L59 202 L43 202 Z" fill="#88542f"/>
+    <path d="M181 116 L198 116 L201 202 L185 202 Z" fill="#88542f"/>
+    <rect x="55" y="116" width="130" height="13" rx="4" fill="#9d643a"/>
+    <path d="M55 129 L65 129 L65 167 L55 167 Z M175 129 L185 129 L185 167 L175 167 Z" fill="#a96d40"/>
+</svg>

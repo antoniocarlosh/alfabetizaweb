@@ -1,0 +1,25 @@
+# Angular
+**/node_modules/
+**/.angular/
+**/dist/
+**/coverage/
+
+# Java / Maven
+**/target/
+
+# Credenciais e configurações locais
+.env
+.env.*
+!.env.example
+**/application-local.properties
+**/application-prod.properties
+
+# Backups
+frontend-backup/
+**/*.zip
+
+# IDE e arquivos temporários
+.idea/
+.vscode/
+*.iml
+*.log
