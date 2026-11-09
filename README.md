@@ -61,15 +61,11 @@ Nota: as instruções de configuração local devem ser conferidas com os script
 Demonstração e capturas de tela
 Acesse a versão publicada: https://alfabetizaweb.vercel.app/
 
-As imagens da interface podem ser adicionadas futuramente à pasta docs/images/ e referenciadas aqui, por exemplo:
-![Atividade de alfabetização](docs/images/atividade-letras.png)
 Observação: por utilizar hospedagem gratuita, a API pode levar alguns instantes para responder no primeiro acesso após um período de inatividade.
 Próximas melhorias
 - Ampliar o catálogo de atividades e níveis de dificuldade.
 - Aprimorar a acessibilidade e os recursos multimídia.
 - Evoluir os relatórios de acompanhamento.
-- Realizar testes de usabilidade com o público-alvo, mediante autorização e cuidados de privacidade.
-Autor
 Antônio Carlos Honorato Nunes
 Estudante de Engenharia de Software · Projeto acadêmico e de portfólio
 AlfabetizaWeb — aprender pode ser uma aventura.
